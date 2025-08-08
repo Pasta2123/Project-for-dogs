@@ -1,0 +1,17 @@
+# Ignoruje složku virtuálního prostředí
+venv/
+
+# Ignoruje cache soubory Pythonu
+__pycache__/
+*.pyc
+
+# Ignoruje dočasné soubory
+*~
+*.swp
+.DS_Store
+
+# Ignoruje IDE soubory
+.vscode/
+
+# Ignoruje soubory s citlivými údaji
+.env
