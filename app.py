@@ -66,44 +66,65 @@ doghouses_with_paddock = [
 # user input for dog
 def get_dog_input():
     print("\nEnter dog details:")
-    gender = input("Please enter the dog's gender: ").strip().lower()
+    while True:
+
+        gender = input("Please enter the dog's gender: ").strip().lower()
+        if gender not in ("Female", "female", "Male", "male"):
+            print("please enter correct syntax")
+        else:
+            break
+        
     name = input("Please enter the dog's name: ").strip()
-    age = int(input("Please enter the dog's age: ").strip())
+        
+    while True:
+        try:
+            age = int(input("Please enter the dog's age: ").strip())
+            if age > 20 or age < 0:
+                print("Please enter a valid age between 0 and 20.")
+            else:
+                break
+        except ValueError:
+            print("Invalid input. Please enter a number.")
     return Dog(gender, name, age)
 
 def print_available_doghouses():
     print("\nAvailable Doghouses:")
-    for i, doghouse in enumerate(doghouses, start=1):
-        print(f"{i}. Doghouse - {doghouse.size} ({doghouse.color})")
-    for i, doghouse in enumerate(doghouses_with_paddock, start=len(doghouses) + 1):
-        print(f"{i}. Doghouse with paddock - {doghouse.size} ({doghouse.color})")
+    # Combine all doghouses into one list and filter only those without dogs
+    available_houses = []
+    for house in doghouses:
+        if not house.dogs:
+            available_houses.append(house)
+    for house in doghouses_with_paddock:
+        if not house.dogs:
+            available_houses.append(house)
 
+    if not available_houses:
+        print("No doghouses available.")
+        return []
 
+    for i, house in enumerate(available_houses, start=1):
+        if isinstance(house, Doghouse_with_paddock):
+            print(f"{i}. Doghouse with paddock - {house.size} ({house.color}), paddock size: {house.paddock_size}")
+        else:
+            print(f"{i}. Doghouse - {house.size} ({house.color})")
+    return available_houses
 
 # User input for each their dog to be added to Doghouse or Doghouse_with_paddock
 def assign_doghouse(dog):
-    print_available_doghouses()
     while True:
+        available_houses = print_available_doghouses()
+        if not available_houses:
+            print("No available doghouses left!")
+            return
         try:
             choice = int(input(f"\nWhich doghouse would you like to assign to {dog.name}? (number): "))
-            if choice < 1 or choice > len(doghouses) + len(doghouses_with_paddock):
-                print("Invalid choice. Please try again.")
-            elif choice <= len(doghouses):
-                selected_house = doghouses[choice - 1]
-                if selected_house.dogs:
-                    print("This doghouse already has a dog. Please choose another one.")
-                    continue
+            if 1 <= choice <= len(available_houses):
+                selected_house = available_houses[choice - 1]
                 selected_house.add_dog(dog)
-                print(f"{dog.name} has been assigned to a {selected_house.info()}")
+                print(f"{dog.name} has been assigned to {selected_house.info()}")
                 break
             else:
-                selected_house = doghouses_with_paddock[choice - len(doghouses) - 1]
-                if selected_house.dogs:
-                    print("This doghouse already has a dog. Please choose another one.")
-                    continue
-                selected_house.add_dog(dog)
-                print(f"{dog.name} has been assigned to a {selected_house.info()}")
-                break
+                print("Invalid choice. Please try again.")
         except ValueError:
             print("Invalid input. Please enter a number.")
  
@@ -129,18 +150,7 @@ def main():
 if __name__ == "__main__":
     main()
 
-dog1 = Dog("male", "Buddy", 3)
-dog2 = Dog("female", "Courtney", 2)
-dog3 = Dog("male", "Buddy", 4)  # This will create a new instance with a modified name
-
-doghouse = Doghouse("brown", "Small")
-doghouse.add_dog(dog1)
-
-doghouse_with_paddock = Doghouse_with_paddock("Yellow", "Small", "Large")
-doghouse_with_paddock.add_dog(dog2)
 
 
-# Example usage
-print(dog1)
-print(dog2)
-print(dog3)  # This will print "Buddy2 is a 4-year-old and        
+
+
